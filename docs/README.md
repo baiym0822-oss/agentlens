@@ -3,7 +3,7 @@
 **Open-source agent observability — log, track, and visualize your AI agent fleet.**
 
 ```bash
-npm install agentlens
+npm install github:baiym0822-oss/agentlens
 ```
 
 ## Quick Start
