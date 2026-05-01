@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { AlertTriangle, CheckCircle, Activity, BarChart3 } from "lucide-react";
+import { DailyTrendChart } from "@/components/daily-trend-chart";
+import { TokenChart } from "@/components/token-chart";
 
 export const dynamic = "force-dynamic";
 
@@ -73,6 +75,29 @@ export default async function DashboardPage() {
     .reduce((sum, m) => sum + m.tokens, 0)
     .toLocaleString();
 
+  // Daily trends for charts
+  const dailyMap: Record<
+    string,
+    { total: number; success: number; tokens: number; durationMs: number }
+  > = {};
+  for (const m of metrics) {
+    const day = m.timestamp.toISOString().slice(0, 10);
+    if (!dailyMap[day]) dailyMap[day] = { total: 0, success: 0, tokens: 0, durationMs: 0 };
+    dailyMap[day].total++;
+    if (m.success) dailyMap[day].success++;
+    dailyMap[day].tokens += m.tokens;
+    dailyMap[day].durationMs += m.durationMs;
+  }
+  const dailyTrend = Object.entries(dailyMap)
+    .map(([date, data]) => ({
+      date,
+      successRate: data.total > 0 ? Math.round((data.success / data.total) * 100) : 0,
+      total: data.total,
+      tokens: data.tokens,
+      avgDuration: data.total > 0 ? Math.round(data.durationMs / data.total) : 0,
+    }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+
   return (
     <div>
       <div className="mb-8">
@@ -113,6 +138,24 @@ export default async function DashboardPage() {
           <div className="text-2xl font-bold">{Object.keys(agents).length}</div>
         </div>
       </div>
+
+      {/* Charts */}
+      {metrics.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+          <div className="bg-[#131320] border border-[#1e1e35] rounded-xl p-5">
+            <h3 className="text-sm font-medium text-zinc-400 mb-4">
+              Success Rate Trend
+            </h3>
+            <DailyTrendChart data={dailyTrend} />
+          </div>
+          <div className="bg-[#131320] border border-[#1e1e35] rounded-xl p-5">
+            <h3 className="text-sm font-medium text-zinc-400 mb-4">
+              Token Usage
+            </h3>
+            <TokenChart data={dailyTrend} />
+          </div>
+        </div>
+      )}
 
       {/* Alerts */}
       {alerts.length > 0 && (
