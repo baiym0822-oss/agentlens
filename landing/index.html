@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentLens — AI Agent Observability</title>
+<meta name="description" content="Open-source agent observability. See what your AI agents are doing — and what's going wrong. Under 10 lines of code.">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #131320;
+  --border: #1e1e35;
+  --text: #e4e4eb;
+  --text-muted: #8888a0;
+  --accent: #6366f1;
+  --accent-glow: #818cf8;
+  --green: #22c55e;
+  --red: #ef4444;
+  --yellow: #eab308;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
+body { min-height: 100vh; }
+a { color: var(--accent-glow); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.hero {
+  padding: 120px 24px 80px;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #fff 0%, var(--accent-glow) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  max-width: 560px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+.hero .cta {
+  display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px; border-radius: 12px; font-size: 1rem;
+  font-weight: 600; cursor: pointer; border: none;
+  transition: all 0.2s ease;
+}
+.btn-primary {
+  background: var(--accent); color: #fff;
+  box-shadow: 0 0 40px rgba(99,102,241,0.3);
+}
+.btn-primary:hover { background: var(--accent-glow); transform: translateY(-1px); }
+.btn-secondary {
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--accent); }
+
+.terminal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  max-width: 720px;
+  margin: 60px auto;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.terminal-header {
+  background: #1a1a2e;
+  padding: 12px 16px;
+  display: flex;
+  gap: 8px;
+}
+.terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+.terminal-dot.r { background: #ff5f57; }
+.terminal-dot.y { background: #febc2e; }
+.terminal-dot.g { background: #28c840; }
+.terminal-body {
+  padding: 24px;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #a0a0c0;
+  overflow-x: auto;
+}
+.terminal-body .d { color: #6366f1; }
+.terminal-body .s { color: #22c55e; }
+.terminal-body .w { color: #eab308; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  max-width: 900px;
+  margin: 80px auto;
+  padding: 0 24px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+}
+.stat-card .number {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent-glow), #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.stat-card .label { color: var(--text-muted); margin-top: 8px; font-size: 0.9rem; }
+
+.features {
+  max-width: 900px;
+  margin: 80px auto;
+  padding: 0 24px;
+}
+.features h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 48px;
+}
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+.feature {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+.feature h3 { font-size: 1.1rem; margin-bottom: 8px; }
+.feature p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
+
+.install {
+  max-width: 720px;
+  margin: 80px auto;
+  padding: 0 24px;
+  text-align: center;
+}
+.install h2 { font-size: 2rem; margin-bottom: 24px; }
+.install code {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  font-family: 'SF Mono', monospace;
+  font-size: 0.9rem;
+  color: var(--accent-glow);
+  margin: 16px 0;
+}
+
+footer {
+  text-align: center;
+  padding: 60px 24px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--border);
+  max-width: 900px;
+  margin: 40px auto 0;
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <h1>See what your AI agents are doing.</h1>
+  <p>Open-source agent observability. Log, track, and visualize your agent fleet in under 10 lines of code. Detect silent failures before your customers do.</p>
+  <div class="cta">
+    <a href="#install" class="btn btn-primary">npm install agentlens </a>
+    <a href="https://github.com/baiym0822-oss/agentlens" class="btn btn-secondary">View on GitHub </a>
+  </div>
+</section>
+
+<div class="terminal">
+  <div class="terminal-header">
+    <div class="terminal-dot r"></div>
+    <div class="terminal-dot y"></div>
+    <div class="terminal-dot g"></div>
+  </div>
+  <div class="terminal-body">
+<span class="d">$</span> node -e "require('agentlens').dashboard()"
+
+╔══════════════════════════════════════════════════════════╗
+║              AgentLens — Agent Dashboard                 ║
+╠══════════════════════════════════════════════════════════╣
+║ <span class="s">executor</span>             │ <span class="s">94.2%</span>    │ 82,000     │ 42s      ║
+║ <span class="s">code-reviewer</span>        │ <span class="s">99.1%</span>    │ 31,000     │ 18s      ║
+║ <span class="w">debugger</span>             │ <span class="w">78.3%</span>    │ 125,000    │ 95s      ║ ← ⚠️
+╠══════════════════════════════════════════════════════════╣
+║ Total agents: 7                                         ║
+║ Total invocations: 1,247                                ║
+╚══════════════════════════════════════════════════════════╝
+
+<span class="w">  🚨 Agent "debugger" failed 3x consecutively</span>
+<span class="w">     Circuit breaker triggered at 2026-05-01T14:32:00Z</span>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat-card">
+    <div class="number">&lt;10</div>
+    <div class="label">Lines of code to integrate</div>
+  </div>
+  <div class="stat-card">
+    <div class="number">0</div>
+    <div class="label">External dependencies</div>
+  </div>
+  <div class="stat-card">
+    <div class="number">JSONL</div>
+    <div class="label">Data format — open, portable, yours</div>
+  </div>
+  <div class="stat-card">
+    <div class="number">MIT</div>
+    <div class="label">Open source license</div>
+  </div>
+</div>
+
+<div class="features">
+  <h2>Stop flying blind</h2>
+  <div class="feature-grid">
+    <div class="feature">
+      <h3>Real-time Dashboard</h3>
+      <p>ASCII dashboard in your terminal. No setup, no servers, no config. Just npm install and run.</p>
+    </div>
+    <div class="feature">
+      <h3>Silent Failure Detection</h3>
+      <p>Circuit breaker built-in. Agent fails 3x consecutively? You know immediately — not when a customer complains.</p>
+    </div>
+    <div class="feature">
+      <h3>Cost Attribution</h3>
+      <p>Track token usage per agent, per task, per project. Know where your AI budget actually goes.</p>
+    </div>
+    <div class="feature">
+      <h3>Framework Agnostic</h3>
+      <p>Works with Claude Code, OpenAI Agents, LangChain, or your own custom agent framework.</p>
+    </div>
+    <div class="feature">
+      <h3>CSV Export</h3>
+      <p>One command exports everything to CSV. Share with your team, put it in a spreadsheet, do whatever you want.</p>
+    </div>
+    <div class="feature">
+      <h3>Cloud Dashboard (Beta)</h3>
+      <p>Team-wide dashboards, historical analytics, email alerts. For when your agent fleet outgrows the terminal.</p>
+    </div>
+  </div>
+</div>
+
+<div class="install" id="install">
+  <h2>Start in 30 seconds</h2>
+  <code>npm install agentlens</code>
+  <p style="color: var(--text-muted); margin-top: 8px;">or</p>
+  <code>yarn add agentlens</code>
+  <p style="margin-top: 24px; color: var(--text-muted);">
+    AgentLens is and always will be open source (MIT).<br>
+    The cloud dashboard at <strong>agentlens.dev</strong> is how we make money.
+  </p>
+</div>
+
+<footer>
+  AgentLens — Built by people who run AI agents every day.<br>
+  <a href="https://github.com/baiym0822-oss/agentlens">GitHub</a>
+  <a href="https://agentlens.dev">agentlens.dev</a>
+</footer>
+
+</body>
+</html>

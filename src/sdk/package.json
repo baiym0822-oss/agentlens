@@ -1,0 +1,10 @@
+{
+  "name": "agentlens",
+  "version": "0.1.0",
+  "description": "Open-source agent metrics SDK — log, track, and visualize your AI agent fleet. Works with any agent framework.",
+  "main": "index.js",
+  "keywords": ["ai-agent", "observability", "monitoring", "metrics", "claude-code", "langchain", "openai-agents"],
+  "license": "MIT",
+  "repository": {"type": "git", "url": "https://github.com/baiym0822-oss/agentlens"},
+  "files": ["index.js", "lib/"]
+}
