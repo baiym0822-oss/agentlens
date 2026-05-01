@@ -1,0 +1,10 @@
+{
+  "name": "agentlens",
+  "version": "0.2.0",
+  "description": "Open-source AI agent observability — log, track, and visualize your agent fleet. Works with any agent framework.",
+  "main": "src/sdk/index.js",
+  "keywords": ["ai-agents", "observability", "monitoring", "metrics", "claude-code", "langchain", "openai", "devtools"],
+  "license": "MIT",
+  "repository": {"type": "git", "url": "https://github.com/baiym0822-oss/agentlens"},
+  "files": ["src/sdk/", "index.html", "docs/"]
+}
