@@ -5,6 +5,6 @@
   "main": "index.js",
   "keywords": ["ai-agent", "observability", "monitoring", "metrics", "claude-code", "langchain", "openai-agents"],
   "license": "MIT",
-  "repository": {"type": "git", "url": "https://github.com/agentlens/agentlens"},
+  "repository": {"type": "git", "url": "https://github.com/baiym0822-oss/agentlens"},
   "files": ["index.js", "lib/"]
 }

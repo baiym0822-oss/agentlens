@@ -177,6 +177,78 @@ class AgentLens {
   }
 
   /**
+   * Sync local metrics to the AgentLens cloud dashboard.
+   * Requires an API key from agentlens.dev.
+   * @param {Object} [opts]
+   * @param {string} [opts.apiKey] - API key (defaults to AGENTLENS_API_KEY env var)
+   * @param {string} [opts.endpoint] - Cloud endpoint (defaults to https://agentlens.dev/api/metrics/ingest)
+   */
+  async sync(opts = {}) {
+    const apiKey = opts.apiKey || process.env.AGENTLENS_API_KEY;
+    if (!apiKey) {
+      throw new Error('API key required. Set AGENTLENS_API_KEY env var or pass { apiKey } option.');
+    }
+
+    const endpoint = opts.endpoint || 'https://agentlens.dev/api/metrics/ingest';
+    const entries = this._loadEntries('all');
+    if (entries.length === 0) {
+      return { synced: 0 };
+    }
+
+    // Use built-in https (Node.js native)
+    const https = require('https');
+    const { URL } = require('url');
+    const url = new URL(endpoint);
+
+    const body = JSON.stringify({
+      project: this.project,
+      metrics: entries.map((e) => ({
+        agent: e.agent,
+        task_id: e.task_id,
+        session_id: e.session_id,
+        success: e.success,
+        tokens: e.tokens,
+        duration_ms: e.duration_ms,
+        retries: e.retries,
+        rollbacks: e.rollbacks,
+        irkx: e.irkx,
+        meta: e.meta,
+        timestamp: e.timestamp,
+      })),
+    });
+
+    return new Promise((resolve, reject) => {
+      const req = https.request(
+        {
+          hostname: url.hostname,
+          port: url.port || 443,
+          path: url.pathname,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'Content-Length': Buffer.byteLength(body),
+          },
+        },
+        (res) => {
+          let data = '';
+          res.on('data', (chunk) => (data += chunk));
+          res.on('end', () => {
+            try {
+              resolve(JSON.parse(data));
+            } catch {
+              reject(new Error(`Sync failed (${res.statusCode}): ${data}`));
+            }
+          });
+        }
+      );
+      req.on('error', reject);
+      req.write(body);
+      req.end();
+    });
+  }
+
+  /**
    * Export all metrics as CSV (for spreadsheet analysis).
    */
   exportCSV(filepath) {
