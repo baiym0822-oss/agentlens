@@ -3,3 +3,6 @@ node_modules/
 *.log
 .agentlens/
 .DS_Store
+*.db
+*.db-journal
+prisma/migrations/*/migration_lock.sql
