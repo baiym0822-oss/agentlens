@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 一人公司 · 自动化服务</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --border: #222;
+    --text: #e0e0e0;
+    --muted: #888;
+    --accent: #00ff88;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.7; -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 720px; margin: 0 auto; padding: 80px 24px; }
+
+  h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; }
+  h1 span { color: var(--accent); }
+  .sub { color: var(--muted); font-size: 1.1rem; margin-bottom: 48px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px; margin-bottom: 20px;
+  }
+  .card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+  .card p { color: var(--muted); font-size: 0.95rem; }
+  .card .price { font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-top: 12px; }
+
+  .how {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 48px 0;
+  }
+  @media (max-width: 500px) { .how { grid-template-columns: 1fr; } }
+  .step {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 24px; text-align: center;
+  }
+  .step .num {
+    display: inline-flex; align-items:center; justify-content:center;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--accent); color: #000; font-weight: 700; font-size: 0.95rem;
+    margin-bottom: 12px;
+  }
+  .step h4 { font-size: 0.95rem; margin-bottom: 4px; }
+  .step p { color: var(--muted); font-size: 0.85rem; }
+
+  .cta {
+    background: var(--accent); color: #000; border: none; border-radius: 10px;
+    padding: 16px 32px; font-size: 1.05rem; font-weight: 700; cursor: pointer;
+    display: block; width: 100%; text-align: center; text-decoration: none;
+    margin-top: 32px; transition: opacity 0.2s;
+  }
+  .cta:hover { opacity: 0.85; }
+
+  .footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+  .footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>AI 一人公司<br><span>全自动运营服务</span></h1>
+<p class="sub">我替你跑 AI 系统，你只管收钱。不需要学、不需要操作、不需要盯。</p>
+
+<div class="card">
+  <h3>社媒全自动代运营</h3>
+  <p>多平台内容发布 · 热点追踪 · 评论互动 · 数据周报。覆盖即刻/Twitter/Reddit/V2EX/知乎/微博/小红书。</p>
+  <p class="price">¥5,000 / 月</p>
+</div>
+
+<div class="card">
+  <h3>AI Agent 工作流搭建</h3>
+  <p>给你的业务定制 AI 自动化管线 — 代码审查、安全审计、内容生产、客户追踪。完整部署 + 一周陪跑。</p>
+  <p class="price">¥15,000 / 套</p>
+</div>
+
+<div class="card">
+  <h3>代码安全审计</h3>
+  <p>10+ 语言覆盖，50+ 审查 Agent 并行扫描。输出完整报告 + 修复建议。适合有外包项目的公司。</p>
+  <p class="price">¥3,000 / 次</p>
+</div>
+
+<div class="how">
+  <div class="step">
+    <div class="num">1</div>
+    <h4>你下单</h4>
+    <p>选择服务，完成支付</p>
+  </div>
+  <div class="step">
+    <div class="num">2</div>
+    <h4>我开工</h4>
+    <p>AI 系统全自动执行，无需你参与</p>
+  </div>
+  <div class="step">
+    <div class="num">3</div>
+    <h4>收报告</h4>
+    <p>每周收到数据和结果</p>
+  </div>
+  <div class="step">
+    <div class="num">4</div>
+    <h4>持续跑</h4>
+    <p>系统自动迭代优化</p>
+  </div>
+</div>
+
+<a class="cta" id="pay-btn">立即下单</a>
+
+<div class="footer">
+  由 AI Agent 系统驱动 · 7×24 自动运行<br>
+  问题联系：<a href="mailto:baiym0822@gmail.com">baiym0822@gmail.com</a>
+</div>
+
+</div>
+</body>
+</html>
